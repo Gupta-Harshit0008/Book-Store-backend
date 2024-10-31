@@ -40,21 +40,27 @@ exports.signUpConroller= async(req,res)=>{
 
 // login controller
 
-exports.loginController=(req,res)=>{
-    try{
-if(req.body.uname){
-    res.status(200).json({
-        status:'success',
-        message:'user login successfull'
-    })
-}
-else{
-    res.status(400).json({
-        status:'fail',
-        message:'pls enter corrcet creds..'
-    })
-}
-       
+exports.loginController= async (req,res)=>{
+    try{ 
+            email=req.body.email
+            password=req.body.password
+            if(!email || !password){
+               return res.status(400).json({
+                    status:'failure',
+                    message:'Please enter your email or password'
+                })
+            }
+        const data=await user.findOne({email})
+        if (!data || !(password === data.password)){
+          return res.status(403).json({
+                status:'failure',
+                message:' No user Found'
+            })
+        }
+        res.status(200).json({
+            status:'success',
+            message:'User logeddin'
+        })
     }
     catch(err){
         res.status(400).json({
