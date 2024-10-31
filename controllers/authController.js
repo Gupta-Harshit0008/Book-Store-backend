@@ -1,17 +1,31 @@
+const user=require('../Modals/userModal')
+
 // signup controller
-exports.signUpConroller=(req,res)=>{
+exports.signUpConroller= async(req,res)=>{
     try{
-        if(req.body){
-            res.status(200).json({
-                status:'success',
-                message:'User registered successfully'
-            })
+        const userData={
+            userName:req.body.userName,
+            password:req.body.password,
+           email:req.body.email,
+           confirmPassword:req.body.confirmPassword
         }
-        else{
-            res.status(400).json({
-                status:'failure',
-                message:'Please enter all details correctly'
-        })
+        
+
+        if (userData){
+            if(userData.password !== userData.confirmPassword){
+                res.status(400).json({
+                    status:'failure',
+                    message:'Please Enter Password and Confirm Password correctly'
+                })
+            }
+            else{
+                const usersdata= await user.create(userData)
+                res.status(200).json({
+                    status:'success',
+                    message:'user registered successfully',
+                    usersdata
+                })
+            }
         }
         
     }
@@ -28,7 +42,7 @@ exports.signUpConroller=(req,res)=>{
 
 exports.loginController=(req,res)=>{
     try{
-if(req.body){
+if(req.body.uname){
     res.status(200).json({
         status:'success',
         message:'user login successfull'
@@ -37,7 +51,7 @@ if(req.body){
 else{
     res.status(400).json({
         status:'fail',
-        message:'pls enter corrcet creds.'
+        message:'pls enter corrcet creds..'
     })
 }
        
