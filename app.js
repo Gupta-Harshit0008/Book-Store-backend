@@ -7,10 +7,18 @@ const booksRouter= require('./routes/booksRouter')
 
 const app=express();
 
+const corsOptions = {
+    origin: 'http://localhost:4200', // allow requests from this origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  };
+ 
+  
 // middlewares
 app.use(morgan('dev'))
 app.use(express.json())
-app.use(cors())
+// app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
 
 
 
