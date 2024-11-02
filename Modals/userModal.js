@@ -13,6 +13,10 @@ const userSchema= new mongoose.Schema({
         type:String,
         required:[true,'User must have an Email'],
         unique:[true,'User email must be unique']
+    },
+    isAdmin:{
+        type:Boolean,
+        default:false
     }
 })
 

@@ -4,6 +4,7 @@ const cors =require('cors')
 
 const authRouter=require('./routes/authRouter')
 const booksRouter= require('./routes/booksRouter')
+const userRouter=require('./routes/userRouter')
 
 const app=express();
 
@@ -26,5 +27,5 @@ app.use(cors(corsOptions));
 
 app.use('/',authRouter)
 app.use('/books',booksRouter)
-
+app.use('/userDetails',userRouter)
 module.exports=app
