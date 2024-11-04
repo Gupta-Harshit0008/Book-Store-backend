@@ -77,3 +77,11 @@ catch(err){
     })
 }
 }
+
+exports.addingBooksToCart= (req,res)=>{
+    console.log(req.body)
+    res.status(200).json({
+      status:'success',
+      message:'Item added to cart successfully'
+    })
+    }
