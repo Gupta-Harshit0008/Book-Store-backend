@@ -1,6 +1,7 @@
 const book= require('../Modals/booksModal')
 const Cart = require('../Modals/booksCartModal')
 
+// getAllBooks
 exports.getAllbooksController= async (req,res)=>{
     try{
         const getAllBooks= await book.find({}, 'name price Author' );
@@ -25,6 +26,7 @@ if(!getAllBooks){
     }
 }
 
+// find a book using ID
 exports.getBookByID= async(req,res)=>{
     try{
         const bookByID= await book.findById(req.params.id)
@@ -51,6 +53,7 @@ exports.getBookByID= async(req,res)=>{
     }
 }
 
+//  for adding new Book ()
 
 exports.AddBooks= async (req,res)=>{
 
@@ -79,6 +82,7 @@ catch(err){
 }
 }
 
+// for adding books to cart
 exports.addingBooksToCart= async (req,res)=>{
     try{
         const bookByID= await book.findById(req.body.bookId)  
@@ -120,4 +124,27 @@ exports.addingBooksToCart= async (req,res)=>{
             message:'some error occoured'
           })
     }
+    }
+// fecthing cart Items for a particular user
+exports.ItemsinCart=async (req,res)=>{
+    try{
+        const Items= await Cart.find({userId:req.body.userId})
+        const bookIds = Items.map(item => item.bookId);
+        const cartItemsDetails = await book.find(
+            { _id: { $in: bookIds } }, // Finds books with _id in the bookIds array
+            'name price Author _id'     // Selects only the specified fields
+        );
+        res.status(200).json({
+            status:'success',
+            message:'details fetched successfully',
+            cartItemsDetails
+          })
+}
+    catch(err){
+        res.status(404).json({
+            status:'failure',
+            message:'No data found',
+          })
+    }
+ 
     }

@@ -21,13 +21,6 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(cors(corsOptions));
 
-
-// api for fetching data from Cart
-app.post('/books/booksInCart',(req,res)=>{
-
-})
-
-
 // routes
 
 app.use('/',authRouter)
