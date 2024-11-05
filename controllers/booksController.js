@@ -1,4 +1,5 @@
 const book= require('../Modals/booksModal')
+const Cart = require('../Modals/booksCartModal')
 
 exports.getAllbooksController= async (req,res)=>{
     try{
@@ -78,10 +79,45 @@ catch(err){
 }
 }
 
-exports.addingBooksToCart= (req,res)=>{
-    console.log(req.body)
-    res.status(200).json({
-      status:'success',
-      message:'Item added to cart successfully'
-    })
+exports.addingBooksToCart= async (req,res)=>{
+    try{
+        const bookByID= await book.findById(req.body.bookId)  
+        if (req.body.quantity < bookByID.quantity){
+            const cartItem= await Cart.find({bookId:req.body.bookId,userId:req.body.userId})
+    if(cartItem.length>0)
+    {
+        const updateCart=await Cart.findByIdAndUpdate(cartItem[0]._id,{quantity:req.body.quantity,updateAt:Date.now()},{ new: true })
+        res.status(200).json({
+            status:'success',
+            message:'Item updated to cart successfully',
+            updateCart
+          })
+    }
+    else{
+        const bCart=await Cart.create({
+            bookId:req.body.bookId,
+            userId:req.body.userId,
+            quantity:req.body.quantity
+        })
+        res.status(200).json({
+            status:'success',
+            message:'Item added to cart successfully',
+            bCart
+          })
+    
+    }
+        }
+        else{
+            res.status(400).json({
+                status:'failure',
+                message:'qunaity entered is more then in our stock'
+              })
+        }    
+    }
+    catch(err){
+        res.status(400).json({
+            status:'failure',
+            message:'some error occoured'
+          })
+    }
     }
