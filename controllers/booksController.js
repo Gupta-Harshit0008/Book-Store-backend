@@ -53,7 +53,7 @@ exports.getBookByID= async(req,res)=>{
     }
 }
 
-//  for adding new Book ()
+//  for adding new Book
 
 exports.AddBooks= async (req,res)=>{
 
@@ -125,10 +125,11 @@ exports.addingBooksToCart= async (req,res)=>{
           })
     }
     }
+
 // fecthing cart Items for a particular user
 exports.ItemsinCart=async (req,res)=>{
     try{
-        const Items= await Cart.find({userId:req.body.userId})
+        const Items= await Cart.find({userId:req.body.userId},'bookId quantity')
         const bookIds = Items.map(item => item.bookId);
         const cartItemsDetails = await book.find(
             { _id: { $in: bookIds } }, // Finds books with _id in the bookIds array
@@ -137,7 +138,8 @@ exports.ItemsinCart=async (req,res)=>{
         res.status(200).json({
             status:'success',
             message:'details fetched successfully',
-            cartItemsDetails
+            cartItemsDetails,
+            Items
           })
 }
     catch(err){
