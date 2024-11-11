@@ -154,7 +154,7 @@ exports.ItemsinCart=async (req,res)=>{
     // deleted items for a particular user in Cart
 exports.deleteItemFromCart=async (req,res)=>{
     try{
-        const Items= await Cart.findOneAndDelete({_id:req.body.itemId}, 'userId bookId quantity')
+        const Items= await Cart.findByIdAndDelete({_id:req.body.itemId})
         if(!Items){
             return res.status(404).json({
                 status:'failure',
