@@ -1,9 +1,12 @@
+const Cart = require('../Modals/booksCartModal')
 const user=require('../Modals/userModal')
 
 exports.userController=async (req,res)=>{
   try{
     email=req.body.email
 const userDetails=await user.findOne({email},'_id userName email isAdmin')
+const userId=userDetails._id
+const cartCount = await Cart.find({userId})
 if(!userDetails){
   res.status(404).json({
     status:'failure',
@@ -14,7 +17,8 @@ else{
   res.status(200).json({
     status:'success',
     message:'user Details fetched',
-    userDetails
+    userDetails,
+    CartCount:cartCount.length
   })
 }
     
