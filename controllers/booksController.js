@@ -129,7 +129,7 @@ exports.addingBooksToCart= async (req,res)=>{
 // fecthing cart Items for a particular user
 exports.ItemsinCart=async (req,res)=>{
     try{
-        const Items= await Cart.find({userId:req.body.userId},'bookId quantity')
+        const Items= await Cart.find({userId:req.body.userId},'bookId quantity _id')
         const bookIds = Items.map(item => item.bookId);
         const cartItemsDetails = await book.find(
             { _id: { $in: bookIds } }, // Finds books with _id in the bookIds array
@@ -150,3 +150,27 @@ exports.ItemsinCart=async (req,res)=>{
     }
  
     }
+
+    // deleted items for a particular user in Cart
+exports.deleteItemFromCart=async (req,res)=>{
+    try{
+        const Items= await Cart.findOneAndDelete({_id:req.body.itemId}, 'userId bookId quantity')
+        if(!Items){
+            return res.status(404).json({
+                status:'failure',
+                message:'No Items Found',
+              })    
+        }
+        res.status(200).json({
+          status:'success',
+          message:'item Deleted SuccessFully',
+          Items
+        })
+    }
+        catch{
+            res.status(404).json({
+                status:'failure',
+                message:'No Items Found',
+              })   
+        }
+      } 
