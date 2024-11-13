@@ -1,4 +1,8 @@
 const user=require('../Modals/userModal')
+const signToken=require('../utils/jwtTokenUtil')
+const util=require('util')
+const jwt=require('jsonwebtoken')
+
 
 // signup controller
 exports.signUpConroller= async(req,res)=>{
@@ -57,10 +61,17 @@ exports.loginController= async (req,res)=>{
                 message:' No user Found'
             })
         }
+        const token=signToken(data._id)
+        res.cookie('token', token, {
+            httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+            secure: false,  // Set to true if using HTTPS
+            sameSite: 'Lax',
+            maxAge: 3600000 // 1 hour
+          });
         res.status(200).json({
             status:'success',
             message:'User logeddin'
-        })
+        })  
     }
     catch(err){
         res.status(400).json({
@@ -68,4 +79,14 @@ exports.loginController= async (req,res)=>{
             message:'pls enter corrcet creds.'
         })
     }
+}
+
+//logout API
+
+exports.logout= (req,res) =>{
+    res.clearCookie('token');
+    res.status(200).json({
+        status:'success',
+        message:'User successfully logged Out'
+    })
 }

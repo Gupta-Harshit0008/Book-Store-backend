@@ -1,9 +1,13 @@
 const book= require('../Modals/booksModal')
 const Cart = require('../Modals/booksCartModal')
+const signToken=require('../utils/jwtTokenUtil')
+const user=require('../Modals/userModal')
 
 // getAllBooks
 exports.getAllbooksController= async (req,res)=>{
     try{
+        const email=req.body.email
+        const data= await user.findOne({email})
         const getAllBooks= await book.find({}, 'name price Author' );
 if(!getAllBooks){
     res.status(204).json({
@@ -12,6 +16,13 @@ if(!getAllBooks){
         books_data:getAllBooks
     })
 }
+const token=signToken(data._id)
+res.cookie('token', token, {
+    httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+    secure: false,  // Set to true if using HTTPS
+    sameSite: 'Lax',
+    maxAge: 3600000 // 1 hour
+  });
             res.status(200).json({
                 status:'success',
                 message:'All Books fecthed successfully',

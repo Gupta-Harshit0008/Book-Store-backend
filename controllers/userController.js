@@ -1,5 +1,7 @@
 const Cart = require('../Modals/booksCartModal')
 const user=require('../Modals/userModal')
+const signToken=require('../utils/jwtTokenUtil')
+
 
 exports.userController=async (req,res)=>{
   try{
@@ -14,6 +16,12 @@ if(!userDetails){
   })
 }
 else{
+  const token=signToken(userId)
+        res.cookie('token', token, {
+            httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+            secure: false,  // Set to true if using HTTPS
+            sameSite: 'Lax'
+          });
   res.status(200).json({
     status:'success',
     message:'user Details fetched',
