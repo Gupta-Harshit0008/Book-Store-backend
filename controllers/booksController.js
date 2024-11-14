@@ -40,7 +40,10 @@ res.cookie('token', token, {
 // find a book using ID
 exports.getBookByID= async(req,res)=>{
     try{
-        const bookByID= await book.findById(req.params.id)
+        const email=req.body.email
+        const bookId=req.body.Bookid
+        const userId=await user.findOne({email})
+        const bookByID= await book.findById(bookId)
         if(!bookByID){
             res.status(404).json({
                 status:'failure',
@@ -48,6 +51,13 @@ exports.getBookByID= async(req,res)=>{
             })
         }
         else{
+            const token=signToken(userId._id)
+            res.cookie('token', token, {
+            httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+            secure: false,  // Set to true if using HTTPS
+            sameSite: 'Lax',
+            maxAge: 3600000 // 1 hour
+                    });
             res.status(200).json({
                 status:'success',
                 message:'Book fecthed successfully',
@@ -69,6 +79,8 @@ exports.getBookByID= async(req,res)=>{
 exports.AddBooks= async (req,res)=>{
 
 try{
+    const email=req.body.email
+    const Id=await user.findOne({email})
     const newBook= await book.create({
         name:req.body.name,
         price:req.body.price,
@@ -79,6 +91,13 @@ try{
         publisher:req.body.publisher,
         language:req.body.language
     })
+    const token=signToken(Id._id)
+    res.cookie('token', token, {
+    httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+    secure: false,  // Set to true if using HTTPS
+    sameSite: 'Lax',
+    maxAge: 3600000 // 1 hour
+            });
     res.status(200).json({
         status:'success',
         message:'A new book added successfully',
@@ -96,12 +115,21 @@ catch(err){
 // for adding books to cart
 exports.addingBooksToCart= async (req,res)=>{
     try{
+        const email=req.body.email
+        const Id=await user.findOne({email})
         const bookByID= await book.findById(req.body.bookId)  
         if (req.body.quantity < bookByID.quantity){
             const cartItem= await Cart.find({bookId:req.body.bookId,userId:req.body.userId})
     if(cartItem.length>0)
     {
         const updateCart=await Cart.findByIdAndUpdate(cartItem[0]._id,{quantity:req.body.quantity,updateAt:Date.now()},{ new: true })
+        const token=signToken(Id._id)
+            res.cookie('token', token, {
+            httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+            secure: false,  // Set to true if using HTTPS
+            sameSite: 'Lax',
+            maxAge: 3600000 // 1 hour
+                    });
         res.status(200).json({
             status:'success',
             message:'Item updated to cart successfully',
@@ -114,6 +142,13 @@ exports.addingBooksToCart= async (req,res)=>{
             userId:req.body.userId,
             quantity:req.body.quantity
         })
+        const token=signToken(Id._id)
+            res.cookie('token', token, {
+            httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+            secure: false,  // Set to true if using HTTPS
+            sameSite: 'Lax',
+            maxAge: 3600000 // 1 hour
+                    });
         res.status(200).json({
             status:'success',
             message:'Item added to cart successfully',
@@ -140,12 +175,21 @@ exports.addingBooksToCart= async (req,res)=>{
 // fecthing cart Items for a particular user
 exports.ItemsinCart=async (req,res)=>{
     try{
+        const email=req.body.email
+        const Id=await user.findOne({email})
         const Items= await Cart.find({userId:req.body.userId},'bookId quantity _id')
         const bookIds = Items.map(item => item.bookId);
         const cartItemsDetails = await book.find(
             { _id: { $in: bookIds } }, // Finds books with _id in the bookIds array
             'name price Author _id'     // Selects only the specified fields
         );
+        const token=signToken(Id._id)
+            res.cookie('token', token, {
+            httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+            secure: false,  // Set to true if using HTTPS
+            sameSite: 'Lax',
+            maxAge: 3600000 // 1 hour
+                    });
         res.status(200).json({
             status:'success',
             message:'details fetched successfully',
@@ -165,6 +209,8 @@ exports.ItemsinCart=async (req,res)=>{
     // deleted items for a particular user in Cart
 exports.deleteItemFromCart=async (req,res)=>{
     try{
+        const email=req.body.email
+        const Id=await user.findOne({email})
         const Items= await Cart.findByIdAndDelete({_id:req.body.itemId})
         if(!Items){
             return res.status(404).json({
@@ -172,6 +218,13 @@ exports.deleteItemFromCart=async (req,res)=>{
                 message:'No Items Found',
               })    
         }
+        const token=signToken(Id._id)
+        res.cookie('token', token, {
+        httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+        secure: false,  // Set to true if using HTTPS
+        sameSite: 'Lax',
+        maxAge: 3600000 // 1 hour
+                });
         res.status(200).json({
           status:'success',
           message:'item Deleted SuccessFully',
