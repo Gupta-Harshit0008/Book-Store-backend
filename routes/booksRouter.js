@@ -1,10 +1,10 @@
 const express= require('express')
 const bookController= require('../controllers/booksController')
-
+const authController=require('../controllers/authController')
 
 const books= express.Router();
-books.route('/').post(bookController.getAllbooksController)
-books.route('/addNewBook').post(bookController.AddBooks)
-books.route('/:id').post(bookController.getBookByID)
+books.route('/').post(authController.isUserLoggedIn,bookController.getAllbooksController)
+books.route('/addNewBook').post(authController.isUserLoggedIn,bookController.AddBooks)
+books.route('/:id').post(authController.isUserLoggedIn,bookController.getBookByID)
 
 module.exports=books

@@ -62,15 +62,10 @@ exports.loginController= async (req,res)=>{
             })
         }
         const token=signToken(data._id)
-        res.cookie('token', token, {
-            httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
-            secure: false,  // Set to true if using HTTPS
-            sameSite: 'Lax',
-            maxAge: 3600000 // 1 hour
-          });
         res.status(200).json({
             status:'success',
-            message:'User logeddin'
+            message:'User logeddin',
+            token
         })  
     }
     catch(err){
@@ -89,4 +84,27 @@ exports.logout= (req,res) =>{
         status:'success',
         message:'User successfully logged Out'
     })
+}
+
+exports.isUserLoggedIn= async(req,res,next)=>{
+   let token;
+   if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+    token=req.headers.authorization.split(' ')[1]
+}
+    if(!token){
+      return res.status(401).json({
+            status:'unauthorized',
+            message:'kindly login to access'
+        })
+    }
+    try{
+     const decode= await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    }
+    catch{
+        return res.status(401).json({
+            status:'unauthorized',
+            message:'kindly re-login to access .. !!'
+        })
+    }
+    next();
 }
