@@ -11,7 +11,7 @@ const booksCartRouter=require('./routes/booksCartRouter')
 const app=express();
 
 const corsOptions = {
-    origin: 'http://localhost:4200', // allow requests from this origin
+    origin: '*', // allow requests from this origin
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true               
