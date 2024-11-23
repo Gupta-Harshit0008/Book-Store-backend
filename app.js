@@ -10,7 +10,7 @@ const booksCartRouter=require('./routes/booksCartRouter')
 
 const app=express();
 
-const allowedOrigins = ['http://localhost:4200', 'https://book-store-frontend-4l65.onrender.com'];
+const allowedOrigins = ['http://localhost:4200', 'https://bookstore-f2bbd.web.app'];
 
 const corsOptions = {
   origin: function (origin, callback) {
