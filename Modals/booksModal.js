@@ -28,6 +28,10 @@ const BookSchema= new mongoose.Schema({
         type:String,
         required:[true, ' A Book must have a publisher']
     },
+    bookImage: 
+    {
+      data: { type: String, required: true }, // Base64 string
+    },
     language:{
         type:String
     }

@@ -5,7 +5,7 @@ const signToken=require('../utils/jwtTokenUtil')
 // getAllBooks
 exports.getAllbooksController= async (req,res)=>{
     try{
-        const getAllBooks= await book.find({}, 'name price Author' );
+        const getAllBooks= await book.find({}, 'name price Author bookImage' );
 if(!getAllBooks){
     res.status(204).json({
         status:'failure',
