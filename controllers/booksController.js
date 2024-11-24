@@ -55,6 +55,40 @@ exports.getBookByID= async(req,res)=>{
     }
 }
 
+// finding a book by name - Search by Book name API
+exports.getBookByName= async(req,res)=>{
+    try{
+        const bookName = req.body.name;
+        if(!bookName){
+            res.status(400).json({
+                status:'failure',
+                message:'Book Name is required',
+              })  
+        }
+        const BookByName= await book.find( {name: { $regex: bookName, $options: 'i' }})
+        if(!BookByName){
+            res.status(204).json({
+                status:'failure',
+                message:'Opps ! No Book found',
+              })
+        }
+        res.status(200).json({
+          status:'success',
+          message:'book details fetched successfully',
+          length:BookByName.length,
+          BookByName
+        })
+    }
+    catch{
+        res.status(400).json({
+            status:'failure',
+            message:'some error occorued',
+            
+          })
+    }
+    
+  }
+
 //  for adding new Book
 
 exports.AddBooks= async (req,res)=>{
