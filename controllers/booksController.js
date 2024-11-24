@@ -135,7 +135,7 @@ exports.ItemsinCart=async (req,res)=>{
         const bookIds = Items.map(item => item.bookId);
         const cartItemsDetails = await book.find(
             { _id: { $in: bookIds } }, // Finds books with _id in the bookIds array
-            'name price Author _id'     // Selects only the specified fields
+            'name price Author _id bookImage'     // Selects only the specified fields
         );
         res.status(200).json({
             status:'success',
