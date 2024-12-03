@@ -131,10 +131,16 @@ else{
           
         })
       }
+      const BookDetails=[]
+      for(const details of purchasedDetails){
+        const bookName= await Book.findById(details.bookId,'_id name Author')
+        BookDetails.push(bookName)
+      }
     return  res.status(200).json({
         status:'success',
         message:'order purchased successfully',
-        purchasedDetails
+        purchasedDetails,
+        BookDetails
       })
     }
     catch(err){
